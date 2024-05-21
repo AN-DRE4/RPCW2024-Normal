@@ -1,0 +1,57 @@
+1. Quantas classes estão definidas na Ontologia?
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(?class) AS ?numClasses)
+WHERE {
+  ?class a rdfs:Class .
+}
+
+
+2. Quantas Object Properties estão definidas na Ontologia?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT (COUNT(?property) AS ?numObjectProperties)
+WHERE {
+  ?property a rdf:Property .
+  FILTER EXISTS { ?property rdfs:domain ?domain . }
+  FILTER EXISTS { ?property rdfs:range ?range . }
+}
+
+
+3. Quantos indivíduos existem na tua ontologia?
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(?individual) AS ?numIndividuals)
+WHERE {
+  ?individual a ?class .
+  FILTER NOT EXISTS { ?class a rdfs:Class . }
+}
+
+
+4. Quem planta tomates?
+
+PREFIX schema: <http://schema.org/>
+
+SELECT ?person
+WHERE {
+  ?farm schema:owns :Tomates .
+  ?person schema:worksFor ?farm .
+}
+
+
+5. Quem contrata trabalhadores temporários?
+
+
+PREFIX schema: <http://schema.org/>
+
+SELECT ?person
+WHERE {
+  ?person schema:jobTitle "Agricultor" ;
+          schema:worksFor ?farm .
+  ?worker schema:jobTitle "Trabalhador Temporário" ;
+          schema:worksFor ?farm .
+}

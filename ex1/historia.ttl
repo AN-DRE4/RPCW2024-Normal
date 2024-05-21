@@ -1,0 +1,219 @@
+@prefix : <http://www.semanticweb.org/utilizador/ontologies/2024/5/historia/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://.org/> .
+@prefix xsd: <http://www.w3.org/2001/XML#> .
+@base <http://www.semanticweb.org/utilizador/ontologies/2024/5/historia/> .
+
+<http://www.semanticweb.org/utilizador/ontologies/2024/5/historia> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#worksFor
+:worksFor rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Farm .
+
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#spouse
+:spouse rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Person .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#parent
+:parent rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Person .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#childOf
+:childOf rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Person .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#knows
+:knows rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Person .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#owns
+:owns rdf:type owl:ObjectProperty ;
+          rdfs:domain :Farm ;
+          rdfs:range [rdfs:unionOf (:Produce :Livestock :Vehicle :Animal )] .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#producedBy
+:producedBy rdf:type owl:ObjectProperty ;
+          rdfs:domain :Person ;
+          rdfs:range :Farm .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#occursOn
+:occursOn rdf:type owl:ObjectProperty ;
+          rdfs:domain :Event ;
+          rdfs:range :xsd.dayOfWeek .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#includes
+:includes rdf:type owl:ObjectProperty ;
+          rdfs:domain :Event ;
+          rdfs:range :Person .
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#name
+:name rdf:type owl:DatatypeProperty ;
+       rdfs:domain [ rdfs:unionOf ( :Person :Farm :Produce :Livestock :Animal :Vehicle :Event ) ] ; .
+       rdfs:range xsd:string .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#jobTytle
+:jobTytle rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Person ;
+       rdfs:range xsd:string .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#location
+:location rdf:type owl:DatatypeProperty ;
+       rdfs:domain [ rdfs:unionOf ( :Farm :Event ) ] ; .
+       rdfs:range xsd:string .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#paymentSchema
+:paymentSchema rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Person ;
+       rdfs:range xsd:string .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#receives
+:receives rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Person ;
+       rdfs:range xsd:string .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#domestic
+:domestic rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Animal ;
+       rdfs:range xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Person
+:Person rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Farm
+:Farm rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Produce
+:Produce rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Livestock
+:Livestock rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Animal
+:Animal rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Vehicle
+:Vehicle rdf:type owl:Class .
+
+###  http://www.semanticweb.org/utilizador/ontologies/2024/5/historia#Event
+:Event rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+:Joao a :Person ;
+    :name "Sr. João" ;
+    :jobTitle "Agricultor" ;
+    :worksFor :Fazenda_Joao ;
+    :spouse :Maria ;
+    :parent :Pedro, :Ana .
+
+:Maria a :Person ;
+    :name "Sra. Maria" ;
+    :jobTitle "Agricultora" ;
+    :worksFor :Fazenda_Joao ;
+    :spouse :Joao ;
+    :parent :Pedro, :Ana .
+
+:Pedro a :Person ;
+    :name "Pedro" ;
+    :jobTitle "Ajuda com os animais" ;
+    :childOf :Joao, :Maria .
+
+:Ana a :Person ;
+    :name "Ana" ;
+    :jobTitle "Ajuda a fazer geleias" ;
+    :childOf :Joao, :Maria .
+
+:Sr_Carlos a :Person ;
+    :name "Sr. Carlos" ;
+    :jobTitle "Agricultor" ;
+    :worksFor :Fazenda_Carlos ;
+    :knows :Joao .
+
+:Fazenda_Joao a :Farm ;
+    :name "Fazenda do Sr. João" ;
+    :location "Vila de São José" ;
+    :owns :Macas, :Laranjas, :Bananas, :Vacas, :Galinhas, :Porcos, :Trator, :Rex .
+
+:Fazenda_Carlos a :Farm ;
+    :name "Fazenda do Sr. Carlos" ;
+    :location "Vila de São José" ;
+    :owns :Tomates, :Alfaces, :Cenouras .
+
+:Macas a :Produce ;
+    :name "Maçãs" ;
+    :producedBy :Fazenda_Joao .
+
+:Laranjas a :Produce ;
+    :name "Laranjas" ;
+    :producedBy :Fazenda_Joao .
+
+:Bananas a :Produce ;
+    :name "Bananas" ;
+    :producedBy :Fazenda_Joao .
+
+:Vacas a :Livestock ;
+    :name "Vacas" ;
+    :ownedBy :Fazenda_Joao .
+
+:Galinhas a :Livestock ;
+    :name "Galinhas" ;
+    :ownedBy :Fazenda_Joao .
+
+:Porcos a :Livestock ;
+    :name "Porcos" ;
+    :ownedBy :Fazenda_Joao .
+
+:Trator a :Vehicle ;
+    :name "Trator" ;
+    :ownedBy :Fazenda_Joao .
+
+:Rex a :Animal ;
+    :name "Rex" ;
+    :domestic :Dog ;
+    :ownedBy :Fazenda_Joao .
+
+:Tomates a :Produce ;
+    :name "Tomates" ;
+    :producedBy :Fazenda_Carlos .
+
+:Alfaces a :Produce ;
+    :name "Alfaces" ;
+    :producedBy :Fazenda_Carlos .
+
+:Cenouras a :Produce ;
+    :name "Cenouras" ;
+    :producedBy :Fazenda_Carlos .
+
+:Feira_Sao_Jose a :Event ;
+    :name "Feira de São José" ;
+    :location "Vila de São José" ;
+    :occursOn "Saturday"^^xsd:dayOfWeek ;
+    :includes :Joao, :Sr_Carlos .
+
+:Trabalhador a :Person ;
+    :jobTitle "Trabalhador Temporário" ;
+    :worksFor :Fazenda_Joao ;
+    :payment "Pago por hora" ;
+    :receives "Refeições durante o trabalho" .
