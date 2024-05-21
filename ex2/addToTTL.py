@@ -1,52 +1,44 @@
+import csv
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, OWL, XSD
-from pandas import read_csv
 
-# Carregar o grafo RDF existente
+from icecream import ic
+
 g = Graph()
 g.parse("medical.ttl")
 
-# Definir o namespace do seu grafo RDF
-disease = Namespace("http://www.example.org/disease-ontology#")
+medical = Namespace('http://www.example.org/disease-ontology#')
 
-# Função para formatar URIs
-def format_uri(id):
-    return URIRef(id)
+def uri_format(individuo):
+    return URIRef(f"""{medical}{individuo.replace(' ', "_").replace('"', '').replace('%', '')}""")
 
-# Abrir o arquivo csv e ler os dados
-with open("Disease_Syntoms.csv", "r") as csv_file:
-    data = read_csv(csv_file, delimiter=",")
+doencas = {}
 
+with open("Disease_Syntoms.csv", "r") as file:
+    content = csv.reader(file)
+    keys = []
+    for c in content:
+        if len(keys) == 0:
+            keys = c
+        else:
+            if c[0] not in doencas.keys():
+                doenca = {"doenca": c[0].strip(), "sintomas": set()}
+            else:
+                doenca = doencas[c[0].strip()]
+            for k in range(1, len(keys)):
+                if len(c[k].strip()) > 0:
+                    doenca["sintomas"].add(c[k].strip())
+            doencas[c[0].strip()] = doenca
 
-# Iterar sobre cada entrada no arquivo csv e adicionar as informações ao grafo RDF
-for i in range(1, len(data)):
-    # remove spaces from disease name
-    temp = data["Disease"][i].replace(" ", "_")
-    disease_uri = format_uri(temp)
-    g.add((disease_uri, RDF.type, disease.Disease))
-    #for every field in the row except the first one, add a triple
-    for j in range(1, len(data.columns)):
-        text = "Symptom_" + str(j)
-        tmp = str(data[text][i])[1:]
-        if tmp != "nan":
-            g.add((disease_uri, disease.hasSymptom, Literal(tmp)))
-            # create a new URI for each symptom
-            symptom_uri = format_uri(tmp)
-            g.add((symptom_uri, RDF.type, disease.Symptom))
         
-# Salvar o grafo RDF atualizado
-#g.serialize(destination="disease-populated.ttl", format="turtle")
+for k in doencas.keys():
+    doenca_uri = uri_format(k)
+    g.add((doenca_uri, RDF.type, OWL.NamedIndividual))
+    g.add((doenca_uri, RDF.type, medical.Disease))
+    for sintoma in doencas[k]["sintomas"]:
+        sintoma_uri = uri_format(sintoma)
+        g.add((sintoma_uri, RDF.type, OWL.NamedIndividual))
+        g.add((sintoma_uri, RDF.type, medical.Symptom))
+        g.add((doenca_uri, medical.hasSymptom, sintoma_uri))
 
-# Open the file with the content to prepend
-#with open('disease-base.ttl', 'r') as prepend_file:
-#    prepend_content = prepend_file.read()
-
-# Open the target file in read mode to get its original content  
-#with open('disease-populated.ttl', 'r') as target_file:
-#    target_content = target_file.read()
-
-# Open the target file in write mode and prepend the content
-#with open('disease-populated.ttl', 'w') as target_file:
-#    target_file.write(prepend_content + target_content)
-
-print(g.serialize())
+g.serialize(destination="med_doencas.ttl", format="turtle")
