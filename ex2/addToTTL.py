@@ -27,9 +27,13 @@ for i in range(1, len(data)):
     #for every field in the row except the first one, add a triple
     for j in range(1, len(data.columns)):
         text = "Symptom_" + str(j)
-        g.add((disease_uri, disease.hasSymptom, Literal(data[text][i])))
-    
-
+        tmp = str(data[text][i])[1:]
+        if tmp != "nan":
+            g.add((disease_uri, disease.hasSymptom, Literal(tmp)))
+            # create a new URI for each symptom
+            symptom_uri = format_uri(tmp)
+            g.add((symptom_uri, RDF.type, disease.Symptom))
+        
 # Salvar o grafo RDF atualizado
 #g.serialize(destination="disease-populated.ttl", format="turtle")
 
