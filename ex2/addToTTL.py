@@ -17,12 +17,6 @@ def format_uri(id):
 with open("Disease_Syntoms.csv", "r") as csv_file:
     data = read_csv(csv_file, delimiter=",")
 
-actors = {}
-genres = {}
-actorID = 0
-filmeID = 0
-genreID = 0
-
 
 # Iterar sobre cada entrada no arquivo csv e adicionar as informações ao grafo RDF
 for i in range(1, len(data)):
