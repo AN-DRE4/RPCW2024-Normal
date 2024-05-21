@@ -1,4 +1,5 @@
 import csv
+import json
 from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, OWL, XSD
 
@@ -40,5 +41,21 @@ for k in doencas.keys():
         g.add((sintoma_uri, RDF.type, OWL.NamedIndividual))
         g.add((sintoma_uri, RDF.type, medical.Symptom))
         g.add((doenca_uri, medical.hasSymptom, sintoma_uri))
+
+with open("pg53651.json", "r") as json_file:
+    patients = json.load(json_file)
+
+# Iterar sobre cada paciente no arquivo JSON e adicionar as informações ao grafo RDF
+for idx, patient in enumerate(patients):
+    patient_id = "p" + str(idx + 1)  # Gerar um ID para o paciente
+    patient_uri = uri_format(patient_id)
+    g.add((patient_uri, RDF.type, OWL.NamedIndividual))
+    g.add((patient_uri, RDF.type, medical.Patient))
+    g.add((patient_uri, medical.name, Literal(patient['nome'])))  # Adicionar o nome do paciente
+
+    # Adicionar os sintomas associados ao paciente
+    for symptom in patient['sintomas']:
+        symptom_uri = uri_format(symptom)
+        g.add((patient_uri, medical.exhibitsSymptom, symptom_uri))
 
 g.serialize(destination="med_doencas.ttl", format="turtle")
